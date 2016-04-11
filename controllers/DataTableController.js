@@ -232,6 +232,6 @@ Date.prototype.toMyDateString = function() {
       return monthAbbreviations[monthNum];
     }
   };
-  return monthName(this.getMonth()) + ' ' + this.getDate() + ', ' + this.getFullYear();
+  return monthName(this.getUTCMonth()) + ' ' + this.getUTCDate() + ', ' + this.getUTCFullYear();
 };
 
