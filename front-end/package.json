@@ -1,0 +1,13 @@
+{
+    "name": "finance-vir--front-end",
+    "private": true,
+    "scripts": {
+        "start": "zwitterion --port 8000"
+    },
+    "dependencies": {
+        "lit-html": "1.1.2",
+        "redux": "4.0.5",
+        "zwitterion": "0.44.2"
+    },
+    "devDependencies": {}
+}

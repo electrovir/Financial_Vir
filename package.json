@@ -1,5 +1,33 @@
 {
-  "name": "Financial_Vir",
-  "version": "0.0.3",
-  "main": "main.js"
+    "name": "finance-vir",
+    "version": "1.0.0",
+    "description": "Personal finance organizer",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/electrovir/finance-vir"
+    },
+    "bugs": {
+        "url": "https://github.com/electrovir/finance-vir/issues"
+    },
+    "homepage": "https://github.com/electrovir/finance-vir",
+    "author": {
+        "name": "electrovir"
+    },
+    "keywords": [
+        "finances",
+        "organizer",
+        "budget"
+    ],
+    "scripts": {
+        "format": "prettier --write './{,!(dist)/**/}*.+(ts|json|html)'",
+        "start": "echo 'no start yet'",
+        "test": "insulate -d ./ -c"
+    },
+    "dependencies": {
+        "insulation": "1.x"
+    },
+    "devDependencies": {
+        "prettier": "1.x"
+    }
 }
