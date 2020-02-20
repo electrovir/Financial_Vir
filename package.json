@@ -21,11 +21,12 @@
     ],
     "scripts": {
         "format": "prettier --write './{,!(dist)/**/}*.+(ts|json|html)'",
-        "start": "echo 'no start yet'",
+        "start": "zwitterion --port 8000 --spa-root front-end/index.html",
         "test": "insulate -d ./ -c"
     },
     "dependencies": {
-        "insulation": "1.x"
+        "insulation": "1.x",
+        "zwitterion": "^0.45.0"
     },
     "devDependencies": {
         "prettier": "1.x"

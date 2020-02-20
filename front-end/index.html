@@ -2,7 +2,7 @@
 
 <html>
     <head>
-        <base href="/" />
+        <base href="front-end/" />
         <title>Finance Vir</title>
         <!-- <link rel="manifest" href="/manifest.json" /> -->
         <!-- <link rel="apple-touch-icon" href="/static/icon/icon-180.png" sizes="180x180" /> -->
@@ -11,9 +11,14 @@
 
         <!-- <script src="modules/global-init.ts"></script>
         <script src="modules/service-worker-init.ts"></script> -->
-
+        <script src="process-polyfill.js"></script>
         <script type="module" src="src/elements/vir-app.ts"></script>
     </head>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+    </style>
 
     <body>
         <vir-app></vir-app>

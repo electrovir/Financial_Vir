@@ -11,3 +11,31 @@ export function getEnumTypedValues<T>(input: T): T[keyof T][] {
 export function getObjectTypedKeys<T>(input: T): (keyof T)[] {
     return Object.keys(input) as (keyof T)[];
 }
+
+export function deepCopy<T extends Object>(input: T): T {
+    return getObjectTypedKeys(input).reduce((accum, currentKey) => {
+        const value = input[currentKey];
+        let newValue: any;
+        if (value instanceof Date) {
+            newValue = new Date(Number(value));
+        } else if (value instanceof RegExp) {
+            newValue = new RegExp(value.source, value.flags);
+        } else if (
+            value === null ||
+            value === undefined ||
+            typeof value === 'string' ||
+            typeof value === 'number' ||
+            typeof value === 'boolean' ||
+            typeof value === 'function'
+        ) {
+            newValue = value;
+        } else if (Array.isArray(value)) {
+            newValue = value.map(item => deepCopy(item));
+        } else if (typeof value === 'object') {
+            newValue = deepCopy(value);
+        }
+
+        accum[currentKey] = newValue;
+        return accum;
+    }, {} as any);
+}

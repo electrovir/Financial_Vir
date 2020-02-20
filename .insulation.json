@@ -1,3 +1,4 @@
 {
-    "back-end": ["common"]
+    "back-end": ["common"],
+    "front-end": ["common"]
 }

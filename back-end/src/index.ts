@@ -1,16 +1,8 @@
-import {createWebSocketServer} from './server/web-socket';
-import {createExpressServer} from './server/express';
-import {getStatementData} from './server/statements';
-import {setupWatcher} from './server/batch-watcher';
+import {createStatementWebSocketServer} from './server/statement-web-socket';
+import {createExpressServer} from './server/express-server';
 
-// const expressServer = createExpressServer(9000);
-// const webSocketServer = createWebSocketServer(expressServer);
+const patternsFilePath = process.argv[2];
 
-async function run() {
-    const thing = await getStatementData(changes => console.log(changes));
-    console.log('VERY FIRST DATA');
-    console.log(thing);
-    console.log('===============================');
-}
+const expressServer = createExpressServer(9000, patternsFilePath);
 
-run();
+const webSocketServer = createStatementWebSocketServer(expressServer);

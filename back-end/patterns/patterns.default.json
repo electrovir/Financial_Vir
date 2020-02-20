@@ -1,0 +1,25 @@
+{
+    "blacklist": [],
+    "patterns": [
+        {
+            "children": [
+                {
+                    "isDefault": true,
+                    "name": "other income",
+                    "transactionType": "incomes"
+                }
+            ],
+            "name": "income"
+        },
+        {
+            "children": [
+                {
+                    "isDefault": true,
+                    "name": "other expenses",
+                    "transactionType": "expenses"
+                }
+            ],
+            "name": "expenses"
+        }
+    ]
+}

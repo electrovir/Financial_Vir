@@ -1,66 +1,26 @@
-import {parsePdfs, StatementPdf, ParserType, ParsedPdf, ParsedOutput} from 'statement-parser';
-import {readdirSync, lstatSync} from 'fs';
+import {parsePdfs, ParserType, ParsedPdf} from 'statement-parser';
+import {lstatSync, existsSync, writeFileSync} from 'fs';
 import {downloadsConfig} from '../../downloads/config';
 import {getEnumTypedKeys} from '../../../common/src/util/object';
-import {join, extname, basename, resolve, relative, isAbsolute} from 'path';
-import {watch} from 'chokidar';
-import {setupWatcher, WatcherChange, WatcherChangeCallback} from './batch-watcher';
+import {StatementData, StatementUpdates} from '../../../common/src/data/statement-data';
+import {extname, basename, resolve, relative, isAbsolute} from 'path';
+import {setupWatcher, WatcherChange} from './batch-watcher';
+import {EventEmitter} from 'events';
 
-type CachedStatementData = {[path: string]: ParsedPdf};
-export type StatementData = {
-    type: string;
-    data: ParsedOutput;
-};
+type AllStatementData = {[path: string]: StatementData};
 
-let cachedData: CachedStatementData | undefined;
+let cachedData: AllStatementData = {};
+let currentId = 0;
 
 function filterPath(path: string) {
     return (
+        existsSync(path) &&
         lstatSync(path).isFile() &&
         extname(path).toLowerCase() === '.pdf' &&
         !!pathToType(path) &&
         basename(path)[0] !== '.'
     );
 }
-
-// async function parseStatements(paths: string[]): Promise<ParsedPdf[]> {
-//     const files = (Object.keys(downloadsConfig) as ParserType[]).reduce((accum: StatementPdf[], parserType) => {
-//         const dirs = downloadsConfig[parserType];
-
-//         const paths = dirs.reduce((accum: string[], dir) => {
-//             const rawPaths = readdirSync(dir);
-//             const removedPaths: string[] = [];
-//             const filteredPaths = rawPaths
-//                 .map(name => join(dir, name))
-//                 .filter(path => {
-//                     if (lstatSync(path).isFile() && extname(path).toLowerCase() === '.pdf') {
-//                         return true;
-//                     }
-//                     if (basename(path)[0] !== '.') {
-//                         removedPaths.push(path);
-//                     }
-//                     return false;
-//                 });
-
-//             if (removedPaths.length) {
-//                 console.warn(`${removedPaths.length} downloaded files were filtered: ${removedPaths}`);
-//             }
-
-//             return accum.concat(filteredPaths);
-//         }, []);
-
-//         return accum.concat(
-//             paths.map(path => ({
-//                 path: path,
-//                 type: parserType,
-//             })),
-//         );
-//     }, []);
-
-//     const results = await parsePdfs(files);
-
-//     return results;
-// }
 
 function pathToType(path: string): ParserType | undefined {
     const type = getEnumTypedKeys(downloadsConfig).find(key =>
@@ -73,13 +33,12 @@ function pathToType(path: string): ParserType | undefined {
     return type;
 }
 
-async function updateCacheData(changes: WatcherChange[]): Promise<ParsedPdf[]> {
+async function updateCacheData(changes: WatcherChange[]): Promise<StatementUpdates> {
     const newData = await parsePdfs(
         changes
             .filter(change => !!filterPath(change.path))
             .map(change => {
                 const type = pathToType(change.path)!;
-                console.log('inner change', {...change, type});
                 return {
                     type,
                     path: change.path,
@@ -87,67 +46,104 @@ async function updateCacheData(changes: WatcherChange[]): Promise<ParsedPdf[]> {
             }),
     );
 
-    if (!cachedData) {
-        cachedData = {};
-    }
-    const forSureCachedData = cachedData;
+    const updatedStatements = newData
+        .filter(parsedPdf => cachedData.hasOwnProperty(parsedPdf.path))
+        .map(parsedPdf => {
+            const id = cachedData[parsedPdf.path].id;
+            cachedData[parsedPdf.path] = createStatementData(parsedPdf);
+            cachedData[parsedPdf.path].id = id;
+            return cachedData[parsedPdf.path];
+        });
 
-    newData.forEach(parsedPdf => {
-        forSureCachedData[parsedPdf.path] = parsedPdf;
-    });
+    const addedStatements = newData
+        .filter(parsedPdf => !cachedData.hasOwnProperty(parsedPdf.path))
+        .map(parsedPdf => {
+            cachedData[parsedPdf.path] = createStatementData(parsedPdf);
+            return cachedData[parsedPdf.path];
+        });
 
-    return newData;
+    const deleteData = changes
+        .filter(change => change.type.includes('unlink') && cachedData.hasOwnProperty(change.path))
+        .map(change => {
+            const id = cachedData[change.path].id;
+            delete cachedData[change.path];
+            return id;
+        });
+
+    const returnValue = {
+        update: updatedStatements,
+        add: addedStatements,
+        remove: deleteData,
+    };
+
+    return returnValue;
 }
 
-function mapParsedPdfToStatementData(input: ParsedPdf[]): StatementData[];
-function mapParsedPdfToStatementData(input: ParsedPdf): StatementData;
-function mapParsedPdfToStatementData(input: ParsedPdf | ParsedPdf[]): StatementData | StatementData[] {
-    function singleMap(input: ParsedPdf): StatementData {
-        return {
-            data: input.data,
-            type: input.type,
-        };
-    }
-    if (Array.isArray(input)) {
-        return input.map(parsedPdf => singleMap(parsedPdf));
-    } else {
-        return singleMap(input);
-    }
+function createStatementData(input: ParsedPdf): StatementData {
+    const data = {
+        incomes: input.data.incomes,
+        expenses: input.data.expenses,
+        accountSuffix: input.data.accountSuffix,
+        startDate: input.data.startDate,
+        endDate: input.data.endDate,
+    };
+
+    return {
+        data,
+        id: ++currentId,
+        type: input.type,
+    };
 }
 
-export async function getStatementData(
-    callback?: (changes: StatementData[]) => void | Promise<void>,
-): Promise<StatementData[]> {
-    let resolved = false;
-    await new Promise(resolve => {
-        if (cachedData === undefined) {
-            setupWatcher('downloads', async changes => {
-                // console.log(changes);
-                const newPdfData = await updateCacheData(changes);
+function transformData(input: AllStatementData): StatementData[] {
+    return Object.keys(input)
+        .filter(key => input[key].data !== undefined)
+        .map(key => input[key]);
+}
 
-                if (!resolved) {
-                    resolve();
-                } else if (callback) {
-                    await callback(mapParsedPdfToStatementData(newPdfData));
-                }
-            });
+export interface DataEmitter {
+    emit(type: 'error', error: Error): boolean;
+    emit(type: 'update', changes: StatementUpdates): boolean;
+    emit(type: 'first-data', data: AllStatementData): boolean;
+    on(type: 'error', listener: (error: Error) => void): this;
+    on(type: 'update', listener: (changes: StatementUpdates) => void): this;
+    on(type: 'first-data', listener: (data: AllStatementData) => void): this;
+    once(type: 'error', listener: (error: Error) => void): this;
+    once(type: 'update', listener: (changes: StatementUpdates) => void): this;
+    once(type: 'first-data', listener: (data: AllStatementData) => void): this;
+}
+
+const statementDataEmitter: DataEmitter = new EventEmitter();
+
+let firstDataFinished = false;
+// file watcher
+setupWatcher('downloads').emitter.on('changes', async changes => {
+    const updates = await updateCacheData(changes);
+
+    if (!firstDataFinished) {
+        statementDataEmitter.emit('first-data', cachedData);
+        firstDataFinished = true;
+    }
+
+    if (updates.add.length || updates.remove.length || updates.update.length) {
+        statementDataEmitter.emit('update', updates);
+    }
+});
+
+export function getStatementDataChangeEmitter() {
+    return statementDataEmitter;
+}
+
+export async function getStatementData(): Promise<StatementData[]> {
+    const awaitedCachedData = await new Promise<AllStatementData>(resolve => {
+        if (firstDataFinished) {
+            resolve(cachedData);
         } else {
-            resolve();
+            statementDataEmitter.once('first-data', data => {
+                resolve(data);
+            });
         }
     });
-    resolved = true;
 
-    if (cachedData) {
-        const allData = cachedData;
-        return Object.keys(allData).reduce(
-            (accum: StatementData[], key) => accum.concat(mapParsedPdfToStatementData(allData[key])),
-            [],
-        );
-    } else {
-        throw new Error(`cachedData should've been defined already but wasn't.`);
-    }
-}
-
-if (!module.parent) {
-    // (async () => console.log(await parseAllStatements()))();
+    return transformData(awaitedCachedData);
 }

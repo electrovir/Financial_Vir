@@ -2,12 +2,13 @@
     "name": "finance-vir--front-end",
     "private": true,
     "scripts": {
-        "start": "zwitterion --port 8000"
+        "compile": "tsc -p .",
+        "start": "cd ../ && npm start"
     },
     "dependencies": {
         "lit-html": "1.1.2",
-        "redux": "4.0.5",
-        "zwitterion": "0.44.2"
+        "reduxular": "0.0.5",
+        "typescript": "^3.7.5"
     },
     "devDependencies": {}
 }
