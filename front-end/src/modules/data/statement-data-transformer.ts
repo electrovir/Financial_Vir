@@ -1,4 +1,4 @@
-import {StatementData, ParsedTransaction, ParserType} from '../../../../common/src/data/statement-data';
+import {StatementData, ParsedTransaction} from '../../../../common/src/data/statement-data';
 import {getMonthKey} from '../../../../common/src/util/date';
 import {collapseSpaces} from '../../../../common/src/util/string';
 import {deepCopy} from '../../../../common/src/util/object';
@@ -17,6 +17,7 @@ export type BucketData = {
 };
 export type BucketedData = {[monthKey: string]: BucketData};
 export type BucketedCategorizedData = {[monthKey: string]: CategorizedData};
+
 export type CategoryLeaf = {
     name: string;
     transactionType?: AllTransactionTypes;

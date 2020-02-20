@@ -2,21 +2,36 @@ import {createStatementSocket} from '../network/statement-socket';
 import {getPatterns} from '../network/patterns';
 import {StatementUpdates, StatementData, StatementSocketData} from '../../../../common/src/data/statement-data';
 import {removeFromIndex} from '../../../../common/src/util/array';
-import {categorizeData} from './statement-data-transformer';
+import {categorizeData, BucketedCategorizedData} from './statement-data-transformer';
 import {EventEmitter} from '../event-emitter';
+import {BucketedStatementAccountFileData, createFileData} from './file-data-transformer';
 
-export async function setupDataConnection() {
+export type AllData = {
+    statementData: BucketedCategorizedData;
+    fileData: BucketedStatementAccountFileData;
+};
+
+export interface AllDataEvent extends CustomEvent {
+    detail: AllData;
+}
+
+export async function setupDataConnection(): Promise<EventEmitter<AllDataEvent>> {
     const patternConfig = await getPatterns();
     console.log(patternConfig);
     const rawStatementData: StatementData[] = [];
 
-    const emitter = new EventEmitter();
+    const emitter = new EventEmitter<AllDataEvent>();
 
     createStatementSocket().addEventListener('data', (event: CustomEventInit<StatementSocketData>) => {
         if (event.detail) {
             insertUpdates(rawStatementData, event.detail.data);
             emitter.dispatchEvent(
-                new CustomEvent('categorized-data', {detail: categorizeData(rawStatementData, patternConfig)}),
+                new CustomEvent('categorized-data', {
+                    detail: {
+                        statementData: categorizeData(rawStatementData, patternConfig),
+                        fileData: createFileData(rawStatementData),
+                    },
+                }),
             );
         }
     });

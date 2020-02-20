@@ -2,10 +2,14 @@ import {StatementSocketData, StatementData} from '../../../../common/src/data/st
 import {EventEmitter} from '../event-emitter';
 import {webSocketHost} from './host';
 
-export function createStatementSocket(): EventEmitter {
+export interface StatementSocketDataEvent extends CustomEvent {
+    detail: StatementSocketData;
+}
+
+export function createStatementSocket(): EventEmitter<StatementSocketDataEvent> {
     const socket = new WebSocket(webSocketHost);
 
-    const emitter = new EventEmitter();
+    const emitter = new EventEmitter<StatementSocketDataEvent>();
 
     socket.onmessage = event => {
         emitter.dispatchEvent(new CustomEvent('data', {detail: parseSocketData(event.data)}));

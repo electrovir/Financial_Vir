@@ -8,11 +8,11 @@ export type StatementSocketData = {type: 'statement-data'; data: StatementUpdate
 export type StatementData = {
     type: string;
     id: number;
-    data?: {
+    data: {
         incomes: ParsedTransaction[];
         expenses: ParsedTransaction[];
         startDate: Date | undefined;
-        endDate: Date | undefined;
+        endDate: Date;
         accountSuffix: string;
     };
 };

@@ -80,6 +80,10 @@ async function updateCacheData(changes: WatcherChange[]): Promise<StatementUpdat
 }
 
 function createStatementData(input: ParsedPdf): StatementData {
+    if (!input.data.endDate) {
+        throw new Error(`${input.path} has no end date.`);
+    }
+
     const data = {
         incomes: input.data.incomes,
         expenses: input.data.expenses,

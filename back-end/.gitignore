@@ -1,4 +1,3 @@
 downloads
-node_modules
-*.js
 patterns/patterns.json
+output.json

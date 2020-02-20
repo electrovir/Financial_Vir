@@ -8,8 +8,9 @@ class FinanceVirApp extends HTMLElement {
     connectedCallback() {
         render(this.render({}), this);
         setupDataConnection().then(emitter => {
-            emitter.addEventListener('categorized-data', (event: CustomEventInit) => {
-                render(this.render(event.detail), this);
+            emitter.addEventListener('categorized-data', event => {
+                console.log(event.detail.fileData);
+                render(this.render(event.detail.statementData), this);
             });
         });
     }
