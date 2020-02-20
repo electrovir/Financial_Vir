@@ -1,7 +1,7 @@
-import {html, render} from 'lit-html';
-import {ReduxularElement} from 'reduxular';
+import {html} from 'lit-html';
 import {CategorizedData} from '../modules/data/statement-data-transformer';
 import './vir-transaction';
+import {BaseElement} from './base-element';
 
 type State = {
     category: CategorizedData | undefined;
@@ -13,14 +13,9 @@ const initialState: State = {
     expanded: {},
 };
 
-class FinancialVirCategory extends ReduxularElement<State> {
+class FinancialVirCategory extends BaseElement<State> {
     constructor() {
-        super(initialState, state => {
-            if (this.shadowRoot) {
-                render(this.render(state), this.shadowRoot);
-            }
-        });
-        this.attachShadow({mode: 'open'});
+        super(initialState, true);
     }
 
     private defaultTemplate = html`
@@ -69,7 +64,7 @@ class FinancialVirCategory extends ReduxularElement<State> {
         }
     }
 
-    private render(state: State) {
+    protected render(state: State) {
         if (state.category) {
             return html`
                 ${this.defaultTemplate}

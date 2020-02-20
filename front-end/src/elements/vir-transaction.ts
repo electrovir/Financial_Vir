@@ -1,8 +1,8 @@
-import {html, render} from 'lit-html';
-import {ReduxularElement} from 'reduxular';
+import {html} from 'lit-html';
 import {Transaction} from '../modules/data/statement-data-transformer';
-import {monthKeyToDate, getFullMonthName, dateDisplayFormat} from '../../../common/src/util/date';
+import {dateDisplayFormat} from '../../../common/src/util/date';
 import './vir-category';
+import {BaseElement} from './base-element';
 
 type State = {
     transaction: Transaction | undefined;
@@ -12,14 +12,9 @@ const initialState: State = {
     transaction: undefined,
 };
 
-class FinanceVirTransaction extends ReduxularElement<State> {
+class FinanceVirTransaction extends BaseElement<State> {
     constructor() {
-        super(initialState, state => {
-            if (this.shadowRoot) {
-                render(this.render(state), this.shadowRoot);
-            }
-        });
-        this.attachShadow({mode: 'open'});
+        super(initialState, true);
     }
 
     private defaultTemplate = html`
@@ -55,7 +50,7 @@ class FinanceVirTransaction extends ReduxularElement<State> {
         </style>
     `;
 
-    private render(state: State) {
+    protected render(state: State) {
         if (state.transaction) {
             const transaction = state.transaction;
             return html`

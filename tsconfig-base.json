@@ -6,7 +6,7 @@
         "noImplicitReturns": true,
         "rootDir": "./",
         "strict": true,
-        "target": "es6"
+        "target": "ES2016"
     },
     "exclude": ["node_modules"]
 }

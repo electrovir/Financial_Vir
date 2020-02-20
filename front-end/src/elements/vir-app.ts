@@ -1,30 +1,30 @@
 import {html, render, TemplateResult} from 'lit-html';
-import {BucketedCategorizedData} from '../modules/data/statement-data-transformer';
-import {setupDataConnection} from '../modules/data/combine-all-data';
+import {setupDataConnection, AllData} from '../modules/data/combine-all-data';
 
 import './vir-month';
 
 class FinanceVirApp extends HTMLElement {
     connectedCallback() {
-        render(this.render({}), this);
+        render(this.render(undefined), this);
         setupDataConnection().then(emitter => {
             emitter.addEventListener('categorized-data', event => {
                 console.log(event.detail.fileData);
-                render(this.render(event.detail.statementData), this);
+                render(this.render(event.detail), this);
             });
         });
     }
 
-    private render(categorized: BucketedCategorizedData): TemplateResult {
-        if (Object.keys(categorized).length) {
+    private render(data?: AllData): TemplateResult {
+        if (data && Object.keys(data).length) {
             return html`
-                ${Object.keys(categorized)
+                ${Object.keys(data.statementData)
                     .sort()
                     .reverse()
                     .map(monthKey => {
-                        const thing = categorized[monthKey];
+                        const monthData = data.statementData[monthKey];
+                        const fileData = data.fileData[monthKey];
                         return html`
-                            <vir-month .monthData=${thing} .monthKey=${monthKey}></vir-month>
+                            <vir-month .monthData=${monthData} .monthKey=${monthKey} .fileData=${fileData}></vir-month>
                         `;
                     })}
             `;
