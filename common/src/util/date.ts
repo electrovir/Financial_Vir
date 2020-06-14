@@ -18,6 +18,10 @@ export function monthKeyToDate(input: string) {
     return new Date(`${year}-${monthNumber}-05`);
 }
 
+export function getMonthNumber1Indexed(input: Date): number {
+    return Number(getMonthKey(input).split(MONTH_KEY_SEPARATOR)[1]);
+}
+
 export function dateDisplayFormat(input: Date, includeYear = false, includeMonth = true) {
     const year = includeYear ? `, ${input.getFullYear()}` : '';
     const month = includeMonth ? `${getShortMonthName(input)} ` : '';

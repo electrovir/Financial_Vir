@@ -8,11 +8,11 @@ import {
 import {removeFromIndex} from '../../../../common/src/util/array';
 import {categorizeData, BucketedCategorizedData} from './statement-data-transformer';
 import {EventEmitter} from '../event-emitter';
-import {BucketedStatementAccountFileData, createFileData} from './file-data-transformer';
+import {BucketedMonthlyAccountFileData, createFileData} from './file-data-transformer';
 
 export type AllData = {
     statementData: BucketedCategorizedData;
-    fileData: BucketedStatementAccountFileData;
+    fileData: BucketedMonthlyAccountFileData;
 };
 
 export interface AllDataEvent extends CustomEvent {

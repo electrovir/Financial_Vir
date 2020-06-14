@@ -27,6 +27,20 @@ class FinanceVirApp extends BaseElement<AppState> {
         const data = state.appData;
         if (data) {
             return html`
+                <style>
+                    :host {
+                        display: block;
+                        overflow-y: auto;
+                        overflow-x: hidden;
+                        width: 100%;
+                        height: 100%;
+                    }
+
+                    vir-file-checker {
+                        max-width: 100%;
+                    }
+                </style>
+                <vir-file-checker .fileData=${data.fileData}></vir-file-checker>
                 ${Object.keys(data.statementData)
                     .sort()
                     .reverse()
@@ -38,7 +52,6 @@ class FinanceVirApp extends BaseElement<AppState> {
                             ></vir-month>
                         `;
                     })}
-                <vir-file-checker .fileData=${data.fileData}></vir-file-checker>
             `;
         } else {
             return html`

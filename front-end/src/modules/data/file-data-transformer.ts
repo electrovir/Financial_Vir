@@ -15,12 +15,12 @@ type MonthAccountData = {
 
 type MonthAccountDataGroup = {[monthKey: string]: MonthAccountData};
 
-export type BucketedStatementAccountFileData = {
+export type BucketedMonthlyAccountFileData = {
     accounts: AccountDataGroup;
     months: MonthAccountDataGroup;
 };
 
-export function createFileData(statementData: StatementData[]): BucketedStatementAccountFileData {
+export function createFileData(statementData: StatementData[]): BucketedMonthlyAccountFileData {
     const allAccounts: AccountDataGroup = {};
 
     const accountsInEachMonth = statementData.reduce((accum: MonthAccountDataGroup, current) => {
