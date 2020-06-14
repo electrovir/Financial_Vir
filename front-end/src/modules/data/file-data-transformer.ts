@@ -7,6 +7,7 @@ export type StatementFileData = {
     accountSuffix: string;
     startDate: Date | undefined;
     endDate: Date;
+    type: string;
 };
 
 export type StatementAccountFileData = {
@@ -36,6 +37,7 @@ export function createFileData(statementData: StatementData[]): BucketedStatemen
             accountSuffix: current.data.accountSuffix,
             startDate: current.data.startDate,
             endDate: current.data.endDate,
+            type: current.type,
         });
 
         return accum;

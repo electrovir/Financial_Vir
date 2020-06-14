@@ -31,6 +31,12 @@ class FinanceVirMonth extends BaseElement<State> {
                     display: flex;
                 }
 
+                vir-check-list {
+                    align-self: flex-start;
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
+                }
+
                 vir-category {
                     border-top-right-radius: 0;
                     border-bottom-right-radius: 0;

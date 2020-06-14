@@ -3,7 +3,7 @@
     "private": true,
     "scripts": {
         "compile": "tsc -p .",
-        "test": "npm run compile && node dist/back-end/src/index.js patterns/patterns.json",
+        "test": "ts-node src/index.ts patterns/patterns.json",
         "test-parsing": "npm run compile && node dist/back-end/src/statement-parsing/parsing.js"
     },
     "dependencies": {
@@ -11,6 +11,7 @@
         "cors": "^2.8.5",
         "express": "4.x",
         "statement-parser": "^1.3.1",
+        "ts-node": "^8.10.2",
         "ws": "7.x"
     },
     "devDependencies": {

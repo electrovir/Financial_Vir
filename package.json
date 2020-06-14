@@ -12,7 +12,7 @@
     },
     "homepage": "https://github.com/electrovir/finance-vir",
     "author": {
-        "name": "electrovir"
+        "name": "electrovir (https://github.com/electrovir)"
     },
     "keywords": [
         "finances",
@@ -22,10 +22,10 @@
     "scripts": {
         "format": "prettier --write './{,!(dist)/**/}*.+(ts|json|html)'",
         "start": "zwitterion --port 8000 --spa-root front-end/index.html",
-        "test": "insulate -d ./ -c"
+        "test": "insulate"
     },
     "dependencies": {
-        "insulation": "1.x",
+        "insulation": "^3.0.1",
         "zwitterion": "^0.45.0"
     },
     "devDependencies": {

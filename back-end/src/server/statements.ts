@@ -1,5 +1,5 @@
 import {parsePdfs, ParserType, ParsedPdf} from 'statement-parser';
-import {lstatSync, existsSync, writeFileSync} from 'fs';
+import {lstatSync, existsSync} from 'fs';
 import {downloadsConfig} from '../../downloads/config';
 import {getEnumTypedKeys} from '../../../common/src/util/object';
 import {StatementData, StatementUpdates} from '../../../common/src/data/statement-data';

@@ -5,8 +5,8 @@
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,
         "rootDir": "./",
+        "baseUrl": "./",
         "strict": true,
         "target": "ES2016"
-    },
-    "exclude": ["node_modules"]
+    }
 }

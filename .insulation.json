@@ -1,4 +1,14 @@
 {
-    "back-end": ["common"],
-    "front-end": ["common"]
+    "imports": {
+        "front-end": {
+            "allow": [
+                "common"
+            ]
+        },
+        "back-end": {
+            "allow": [
+                "common"
+            ]
+        }
+    }
 }

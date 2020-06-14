@@ -1,3 +1,4 @@
 {
-    "cSpell.words": ["pdfs"]
+    "cSpell.words": ["pdfs"],
+    "editor.rulers": [100]
 }
