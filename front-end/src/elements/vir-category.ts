@@ -8,14 +8,12 @@ type State = {
     expanded: {[key: string]: boolean};
 };
 
-const initialState: State = {
-    category: undefined,
-    expanded: {},
-};
-
 class FinancialVirCategory extends BaseElement<State> {
     constructor() {
-        super(initialState, true);
+        super({
+            category: undefined,
+            expanded: {},
+        });
     }
 
     private defaultTemplate = html`
@@ -70,7 +68,9 @@ class FinancialVirCategory extends BaseElement<State> {
                 ${this.defaultTemplate}
                 ${Object.keys(state.category).map(key => {
                     const category = state.category![key];
-                    const expandable = (category.transactions && category.transactions.length) || category.children;
+                    const expandable =
+                        (category.transactions && category.transactions.length) ||
+                        category.children;
 
                     return html`
                         <header
@@ -85,7 +85,9 @@ class FinancialVirCategory extends BaseElement<State> {
                                   ${category.transactions.map(
                                       transaction =>
                                           html`
-                                              <vir-transaction .transaction=${transaction}></vir-transaction>
+                                              <vir-transaction
+                                                  .transaction=${transaction}
+                                              ></vir-transaction>
                                           `,
                                   )}
                               `

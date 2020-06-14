@@ -3,24 +3,19 @@ import {CategorizedData} from '../modules/data/statement-data-transformer';
 import {monthKeyToDate, getFullMonthName} from '../../../common/src/util/date';
 import './vir-category';
 import './vir-check-list';
-import {StatementAccountFileData} from '../modules/data/file-data-transformer';
 import {BaseElement} from './base-element';
 
 type State = {
     monthData: CategorizedData | undefined;
     monthKey: string | undefined;
-    fileData: StatementAccountFileData | undefined;
-};
-
-const initialState: State = {
-    monthData: undefined,
-    monthKey: undefined,
-    fileData: undefined,
 };
 
 class FinanceVirMonth extends BaseElement<State> {
     constructor() {
-        super(initialState);
+        super({
+            monthData: undefined,
+            monthKey: undefined,
+        });
     }
 
     protected render(state: State) {
@@ -48,7 +43,6 @@ class FinanceVirMonth extends BaseElement<State> {
             </h1>
             <div class="data">
                 <vir-category .category=${state.monthData}></vir-category>
-                <vir-check-list .data=${state.fileData}></vir-check-list>
             </div>
         `;
     }

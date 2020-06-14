@@ -7,7 +7,7 @@
     },
     "dependencies": {
         "lit-html": "1.1.2",
-        "reduxular": "0.0.5",
+        "reduxular": "0.0.6",
         "typescript": "^3.7.5"
     },
     "devDependencies": {}

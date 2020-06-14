@@ -1,32 +1,44 @@
-import {html, render, TemplateResult} from 'lit-html';
+import {html, TemplateResult} from 'lit-html';
 import {setupDataConnection, AllData} from '../modules/data/combine-all-data';
 
+import './vir-file-checker';
 import './vir-month';
+import {BaseElement} from './base-element';
 
-class FinanceVirApp extends HTMLElement {
-    connectedCallback() {
-        render(this.render(undefined), this);
+type AppState = {
+    appData: AllData | undefined;
+};
+
+class FinanceVirApp extends BaseElement<AppState> {
+    constructor() {
+        super({
+            appData: undefined,
+        });
+
         setupDataConnection().then(emitter => {
             emitter.addEventListener('categorized-data', event => {
-                console.log(event.detail.fileData);
-                render(this.render(event.detail), this);
+                console.log('categorized data', event.detail);
+                this.store.appData = event.detail;
             });
         });
     }
 
-    private render(data?: AllData): TemplateResult {
-        if (data && Object.keys(data).length) {
+    protected render(state: AppState): TemplateResult {
+        const data = state.appData;
+        if (data) {
             return html`
                 ${Object.keys(data.statementData)
                     .sort()
                     .reverse()
                     .map(monthKey => {
-                        const monthData = data.statementData[monthKey];
-                        const fileData = data.fileData[monthKey];
                         return html`
-                            <vir-month .monthData=${monthData} .monthKey=${monthKey} .fileData=${fileData}></vir-month>
+                            <vir-month
+                                .monthData=${data.statementData[monthKey]}
+                                .monthKey=${monthKey}
+                            ></vir-month>
                         `;
                     })}
+                <vir-file-checker .fileData=${data.fileData}></vir-file-checker>
             `;
         } else {
             return html`

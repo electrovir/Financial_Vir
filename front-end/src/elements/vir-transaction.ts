@@ -7,14 +7,11 @@ import {BaseElement} from './base-element';
 type State = {
     transaction: Transaction | undefined;
 };
-
-const initialState: State = {
-    transaction: undefined,
-};
-
 class FinanceVirTransaction extends BaseElement<State> {
     constructor() {
-        super(initialState, true);
+        super({
+            transaction: undefined,
+        });
     }
 
     private defaultTemplate = html`
@@ -56,7 +53,9 @@ class FinanceVirTransaction extends BaseElement<State> {
             return html`
                 ${this.defaultTemplate}
                 <div class="date">${dateDisplayFormat(transaction.date)}</div>
-                <div class="account" title="${transaction.accountSuffix}">${transaction.accountSuffix}</div>
+                <div class="account" title="${transaction.accountSuffix}">
+                    ${transaction.accountSuffix}
+                </div>
                 <div class="amount">${transaction.amount.toFixed(2)}</div>
                 <div class="description">${transaction.description}</div>
             `;
