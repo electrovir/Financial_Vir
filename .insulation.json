@@ -1,0 +1,14 @@
+{
+    "imports": {
+        "front-end": {
+            "allow": [
+                "common"
+            ]
+        },
+        "back-end": {
+            "allow": [
+                "common"
+            ]
+        }
+    }
+}

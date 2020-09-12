@@ -1,20 +1,47 @@
-# Financial_Vir
-A personal finance categorizer in Javascript.
+# Finance Vir
 
-This is entirely a web app.  It is displayed through HTML/CSS and runs solely on Javascript.  It is intended to run inside of the Node Webkit ([now NW.js](http://nwjs.io)) framework/app.
+Personal finance tracking and categorization through automatic reading of band statements. No banking information needs to be entered into any online service!
 
-Outisde of the NW.js setup, node.js is not used and is therefore not critical to the actual functionality of the app.  Therefore, this should run perfectly fine inside any major browser as well.
+## Setup
 
-Everything that is entered into the app is **ONLY** stored client-side.  The data you enter is never seen by me, the data you enter is **ONLY** stored on your own computer.  While this means all your data is 100% private, it also means you will have to use this app on the same computer forever, or figure out a way to transfer the database yourself, as it is not yet implemented.
+1. Create a downloads folder in `back-end` like so: `back-end/downloads`.
+2. Put your different statements in individual folders, like the following:
+    ```
+    back-end
+         downloads
+             chase-credit-statements
+             paypal-statements
+    ```
+    These folders inside of `downloads` can be named whatever you want.
+3. Create a `config.ts` file in the `config` directory by copying and renaming `config.example.ts`. The `config` directory should now look like the following:
+    ```
+    back-end
+         config
+             config.ts
+             config.example.ts
+    ```
+4. Modify `downloadsConfig` to include the parsers and directories you need. Each property key is a `ParserType` and their value is an array of paths to directories containing statements of that `ParserType`, relative to `back-end`. See [the example config file for help](back-end/config/config.example.ts).
+5. Follow the usage steps below.
 
-**I barely know what I'm doing with this.**  This is the first time I've made a real app, the first time I've used git, the first time I've written heavily in Javascript.  I've learned a lot and this app has gone through several complete refactors already as I continue to learn more.  However, I'm very pleased with how well it is working so far. I actually use this app myself for my finances!  That's why I made it.
+## Usage
 
-Note that if you use this in a browser, it will have a seperate database than if you run it as an app inside of NW.js.
+Run the `start` npm script from the repo's root:
 
-#### Running in NW.js
-I'll get back to this.
+```bash
+cd finance-vir
+npm start
+```
 
-#### Running in a Browser
-Download all the files, then simply open "main.html" in a browser and everything else will take care of itself. 
+Once you see the `Zwitterion listening on port` message, go to that port on localhost in a browser. By default this is http://localhost:8000
 
-##### [To do list!](TODO.md)
+## How it works
+
+The front-end gets all transaction data through web sockets. Thus, there is no need to refresh the page when new statements are downloaded and added to their respective folder.
+
+The pattern JSON is received via a GET request. The front-end then categorizes all the data and presents it. Thus, to get an updated pattern the page must be refreshed.
+
+## Patterns
+
+TODO
+
+See [back-end/patterns/patterns.default.json](back-end/patterns/patterns.default.json). Copy paste this file into a `patterns.json` file in the same directory to make modifications.

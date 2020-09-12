@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "forceConsistentCasingInFileNames": true,
+        "module": "commonjs",
+        "noEmit": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "rootDir": "./",
+        "strict": true,
+        "target": "ES2016"
+    }
+}
