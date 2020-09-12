@@ -1,6 +1,6 @@
 import {parsePdfs, ParserType, ParsedPdf} from 'statement-parser';
 import {lstatSync, existsSync} from 'fs';
-import {downloadsConfig} from '../../downloads/config';
+import {downloadsConfig} from '../../config/config';
 import {getEnumTypedKeys} from '../../../common/src/util/object';
 import {StatementData, StatementUpdates} from '../../../common/src/data/statement-data';
 import {extname, basename, resolve, relative, isAbsolute} from 'path';
@@ -23,12 +23,17 @@ function filterPath(path: string) {
 }
 
 function pathToType(path: string): ParserType | undefined {
-    const type = getEnumTypedKeys(downloadsConfig).find(key =>
-        downloadsConfig[key].find(validPath => {
-            const relativePath = relative(resolve(validPath), resolve(path));
-            return relative && !relativePath.startsWith('..') && !isAbsolute(relativePath);
-        }),
-    );
+    const type = getEnumTypedKeys(downloadsConfig).find(key => {
+        const downloadsConfigFromKey = downloadsConfig[key];
+        if (downloadsConfigFromKey) {
+            return downloadsConfigFromKey.find(validPath => {
+                const relativePath = relative(resolve(validPath), resolve(path));
+                return relative && !relativePath.startsWith('..') && !isAbsolute(relativePath);
+            });
+        } else {
+            return false;
+        }
+    });
 
     return type;
 }

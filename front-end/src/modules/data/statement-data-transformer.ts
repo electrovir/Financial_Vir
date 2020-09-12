@@ -145,13 +145,18 @@ function findMatchingNode(
                 return returnValue;
             }
 
-            if ((node.transactionType === type || node.transactionType === 'all') && node.transactions) {
+            if (
+                (node.transactionType === type || node.transactionType === 'all') &&
+                node.transactions
+            ) {
                 if (node.accountSuffix && node.accountSuffix !== transaction.accountSuffix) {
                     return undefined;
                 }
                 if (
                     !useDefault &&
-                    (!node.pattern || (node.pattern && !node.pattern.exec(collapseSpaces(transaction.description))))
+                    (!node.pattern ||
+                        (node.pattern &&
+                            !node.pattern.exec(collapseSpaces(transaction.description))))
                 ) {
                     return undefined;
                 }
@@ -265,7 +270,8 @@ function readConfig(
                     accum[name].children = children;
                 }
             } else {
-                accum[name].pattern = (categoryNode.pattern && new RegExp(categoryNode.pattern, 'i')) || undefined;
+                accum[name].pattern =
+                    (categoryNode.pattern && new RegExp(categoryNode.pattern, 'i')) || undefined;
                 accum[name].transactionType = categoryNode.transactionType || transactionType;
                 accum[name].transactions = [];
                 accum[name].accountSuffix = categoryNode.accountSuffix || accountSuffix;
@@ -273,7 +279,9 @@ function readConfig(
                 accum[name].subtract = categoryNode.subtract || false;
                 if (!accum[name].transactionType) {
                     console.error(name);
-                    throw new Error(`Invalid transaction type on name "${name}": "${accum[name].transactionType}"`);
+                    throw new Error(
+                        `Invalid transaction type on name "${name}": "${accum[name].transactionType}"`,
+                    );
                 }
             }
         }

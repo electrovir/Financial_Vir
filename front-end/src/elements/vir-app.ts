@@ -29,15 +29,27 @@ class FinanceVirApp extends BaseElement<AppState> {
             return html`
                 <style>
                     :host {
-                        display: block;
+                        display: flex;
+                        flex-direction: column;
                         overflow-y: auto;
                         overflow-x: hidden;
                         width: 100%;
                         height: 100%;
+                        box-sizing: border-box;
                     }
 
                     vir-file-checker {
-                        max-width: 100%;
+                        flex-shrink: 0;
+                        padding: 24px;
+                        overflow-x: auto;
+                    }
+
+                    vir-month {
+                        margin: 0 24px;
+                    }
+
+                    vir-month:last-child {
+                        margin-bottom: 24px;
                     }
                 </style>
                 <vir-file-checker .fileData=${data.fileData}></vir-file-checker>

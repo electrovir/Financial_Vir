@@ -21,7 +21,9 @@
     ],
     "scripts": {
         "format": "prettier --write './{,!(dist)/**/}*.+(ts|json|html)'",
-        "start": "zwitterion --port 8000 --spa-root front-end/index.html",
+        "start-frontend": "zwitterion --port 8000 --spa-root front-end/index.html",
+        "start-backend": "cd back-end && npm run start",
+        "start": "./scripts/run-both.sh",
         "test": "insulate"
     },
     "dependencies": {

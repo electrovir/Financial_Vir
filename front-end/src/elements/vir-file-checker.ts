@@ -66,7 +66,8 @@ class FinanceVirFileChecker extends BaseElement<State> {
             return html`
                 <style>
                     :host {
-                        display: block;
+                        display: flex;
+                        overflow: hidden;
                     }
 
                     table {
@@ -79,10 +80,16 @@ class FinanceVirFileChecker extends BaseElement<State> {
                         text-align: center;
                         padding: 0 4px;
                     }
+                    div.spacer {
+                        padding-right: inherit;
+                    }
+
+                    td {
+                        white-space: nowrap;
+                    }
 
                     td.yes {
-                        font-weight: bold;
-                        color: green;
+                        color: darkgreen;
                     }
 
                     td.no {
@@ -90,9 +97,9 @@ class FinanceVirFileChecker extends BaseElement<State> {
                         color: red;
                     }
 
-                    .first-month {
+                    td.first-month + td {
                         border: solid black 0;
-                        border-right-width: 2px;
+                        border-left-width: 2px;
                     }
 
                     .year + .year {
@@ -160,6 +167,8 @@ class FinanceVirFileChecker extends BaseElement<State> {
                         `;
                     })}
                 </table>
+
+                <div class="spacer"></div>
             `;
         }
         return html``;
